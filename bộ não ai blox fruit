@@ -1,5 +1,5 @@
 """
-H-HUB AI CLOUD - BLOX FRUIT MASTER COMPANION & ULTIMATE EDITION
+H-HUB AI CLOUD - BLOX FRUIT FULL QUESTS & MASTER EDITION
 Python standard library only. Deploy as a Render Web Service.
 Start command: python main.py
 """
@@ -16,67 +16,139 @@ HOST = "0.0.0.0"
 PORT = int(os.environ.get("PORT", "10000"))
 MAX_BODY = 256_000
 
-# Trạng thái lưu trữ bộ nhớ trong (Session memory)
 OBSERVATIONS = {}
 HISTORY = {}
 
 # ==========================================
-# 1. CƠ SỞ DỮ LIỆU NHIỆM VỤ & ITEM ĐẶC BIỆT
+# CƠ SỞ DỮ LIỆU TOÀN BỘ NHIỆM VỤ TRONG BLOX FRUIT
 # ==========================================
 ADVANCED_QUESTS = {
+    # --- SEA 1: Cốt truyện & Vũ khí truyền thuyết ---
     "saber": {
         "type": "item_unlock",
-        "description": "Lấy kiếm Saber từ Expert Assassin ở Jungle (Sea 1)",
+        "description": "Lấy kiếm Saber từ Expert Assassin ở Jungle (Yêu cầu Level 200+)",
         "steps": [
             {"action": "move_to", "args": {"position": {"x": -1611, "y": 36, "z": 153}}, "reason": "Đến công tắc 1 tại Jungle"},
-            {"action": "interact_prompt", "args": {"name": "Button1"}, "reason": "Nhấn công tắc mở cửa bí mật"}
+            {"action": "interact_prompt", "args": {"name": "Button1"}, "reason": "Nhấn công tắc 1"},
+            {"action": "find_target", "args": {"category": "boss", "name": "Expert Assassin"}, "reason": "Đánh Expert Assassin"}
         ]
     },
+    "marine ford": {
+        "type": "quest_line",
+        "description": "Chuỗi nhiệm vụ cốt truyện Hải Quân / Tù nhân tại Marine Fortress & Prison",
+        "steps": [{"action": "accept_quest", "args": {"target": "Chief Warden"}, "reason": "Nhận quest Prison"}]
+    },
+
+    # --- SEA 2: Cốt truyện, Thức tỉnh (Awakening), Thợ rèn ---
+    "dark step": {
+        "type": "fighting_style",
+        "description": "Học chiêu chân đen Dark Step từ The Teacher tại Chef Ship (Kingdom of Rose)",
+        "steps": [{"action": "move_to", "args": {"target_name": "Chef Ship"}, "reason": "Đến tàu đầu bếp học Dark Step"}]
+    },
+    "water kung fu": {
+        "type": "fighting_style",
+        "description": "Học Water Kung Fu từ Water Kung Fu Teacher ở Underwater City",
+        "steps": [{"action": "move_to", "args": {"target_name": "Underwater City"}, "reason": "Xuống thành phố dưới nước"}]
+    },
+    "electric claw": {
+        "type": "fighting_style",
+        "description": "Học Electric Claw từ Previous Hero (Third Sea - Floating Turtle)",
+        "steps": [{"action": "move_to", "args": {"target_name": "Floating Turtle"}, "reason": "Đến Floating Turtle tìm NPC"}]
+    },
+    "godhuman": {
+        "type": "fighting_style",
+        "description": "Luyện Godhuman (Yêu cầu max mastery các trường phái võ thuật + nguyên liệu Magma Ore, Fish Tail, Mystic Droplet...)",
+        "steps": [{"action": "inspect_status", "args": {}, "reason": "Kiểm tra nguyên liệu Godhuman"}]
+    },
+    "raid": {
+        "type": "awakening",
+        "description": "Tham gia Factory / Normal / Advanced Raids để thức tỉnh trái ác quỷ hoặc lấy Fragments",
+        "steps": [
+            {"action": "move_to", "args": {"target_name": "Lab"}, "reason": "Di chuyển vào khu vực Lab (Cold and Hot)"},
+            {"action": "interact_prompt", "args": {"name": "Microchip"}, "reason": "Mua chip và bắt đầu Raid"}
+        ]
+    },
+    "don swan": {
+        "type": "boss_quest",
+        "description": "Nói chuyện với Bar Manager tại Cafe và đánh Don Swan để lấy cổng qua Sea 3",
+        "steps": [
+            {"action": "move_to", "args": {"target_name": "Bar Manager"}, "reason": "Gặp Bartender tại Cafe"},
+            {"action": "find_target", "args": {"category": "boss", "name": "Don Swan"}, "reason": "Tiêu diệt Don Swan"}
+        ]
+    },
+
+    # --- SEA 3: Vũ khí tối thượng, Mở khóa Race V3 / V4, Đảo Bí Mật ---
     "soul guitar": {
         "type": "puzzle_quest",
-        "description": "Lấy súng Soul Guitar tại Haunted Castle (Sea 3, Đêm full moon)",
+        "description": "Lấy súng huyền thoại Soul Guitar tại Haunted Castle (Đêm full moon)",
         "steps": [
             {"action": "move_to", "args": {"target_name": "Haunted Castle"}, "reason": "Di chuyển đến lâu đài ma"},
-            {"action": "interact_prompt", "args": {"name": "Gravestone"}, "reason": "Cầu nguyện tại mộ lúc đêm"}
+            {"action": "interact_prompt", "args": {"name": "Gravestone"}, "reason": "Cầu nguyện tại mộ lúc nửa đêm"}
         ]
     },
     "tushita": {
         "type": "sword_quest",
-        "description": "Lấy kiếm Tushita (Sea 3 - Đốt đuốc nhanh / Đánh Longma)",
+        "description": "Lấy kiếm Tushita qua nhiệm vụ thắp đuốc và đánh Longma",
         "steps": [
             {"action": "find_target", "args": {"category": "mob", "name": "Longma"}, "reason": "Tìm và tiêu diệt Longma"}
         ]
     },
-    "dark dagger": {
-        "type": "boss_quest",
-        "description": "Săn Indra / Rip_Indra lấy Dark Dagger",
+    "yama": {
+        "type": "sword_quest",
+        "description": "Rút kiếm Yama từ đền thờ tại Haunted Castle (Yêu cầu quay 30 lần Elite Hunter)",
         "steps": [
-            {"action": "find_target", "args": {"category": "boss", "name": "Rip_Indra"}, "reason": "Săn Boss Indra"}
+            {"action": "move_to", "args": {"target_name": "Haunted Castle Shrine"}, "reason": "Đến đền rút kiếm Yama"}
+        ]
+    },
+    "cursed dual katana": {
+        "type": "ultimate_sword",
+        "description": "Kết hợp Tushita và Yama thành Cursed Dual Katana (CDK) qua 6 thử thách",
+        "steps": [
+            {"action": "inspect_status", "args": {}, "reason": "Kiểm tra tiến độ mở cổng CDK"}
+        ]
+    },
+    "race v3": {
+        "type": "transformation",
+        "description": "Nói chuyện với Arowe tại Flower Hill (Sea 3) sau khi hoàn thành nhiệm vụ đặc biệt của từng tộc",
+        "steps": [
+            {"action": "move_to", "args": {"target_name": "Arowe"}, "reason": "Gặp NPC Arowe tại Flower Hill"}
+        ]
+    },
+    "race v4": {
+        "type": "transformation",
+        "description": "Kéo gạt nước tại Temple of Time dưới đỉnh Great Tree (Cần đánh Indra/Dough King + giải đố gạt cần lúc full moon)",
+        "steps": [
+            {"action": "move_to", "args": {"target_name": "Temple of Time"}, "reason": "Đến Đền Thời Gian"}
         ]
     },
     "dough king": {
         "type": "raid_boss",
-        "description": "Spawn Dough King (Sea 3 - Sweet Chateau)",
+        "description": "Spawn Dough King (Sea 3 - Sweet Chateau) để lấy Mirror Fractal",
         "steps": [
-            {"action": "accept_quest", "args": {"target": "Dough King"}, "reason": "Tham gia đánh Dough King"}
+            {"action": "accept_quest", "args": {"target": "Dough King"}, "reason": "Tham gia tiêu diệt Dough King"}
+        ]
+    },
+    "rip indra": {
+        "type": "boss_quest",
+        "description": "Triệu hồi Rip_Indra True Form bằng 3 Legendary Haki Colors",
+        "steps": [
+            {"action": "find_target", "args": {"category": "boss", "name": "Rip_Indra"}, "reason": "Đánh Boss Rip_Indra"}
         ]
     }
 }
 
-# Cơ sở dữ liệu tư vấn & gợi ý hướng đi cho người chơi theo cấp độ/Sea
+# Hướng dẫn chi tiết theo Sea
 GAME_GUIDE_DATA = {
-    "sea_1": "Ở Sea 1, bạn nên tập trung làm nhiệm vụ farm từ Starter Island -> Jungle -> Pirate Village -> Desert -> Snow Island -> Marine Fortress -> Prison -> Colosseum. Nhớ lấy kiếm Saber khi đạt Level 200 nhé!",
-    "sea_2": "Sang Sea 2 (từ Level 700), hãy ưu tiên làm quest tại Kingdom of Rose, Green Zone, Snow Mountain, Hot and Cold, và săn Boss Don Swan hoặc làm nhiệm vụ Raid.",
-    "sea_3": "Sea 3 (từ Level 1500) là nơi bạn chinh phục các vũ khí mạnh nhất như Tushita, Yama, Cursed Dual Katana, và Soul Guitar tại Haunted Castle hoặc Floating Turtle.",
-    "money": "Để kiếm nhiều tiền (Beli) và Fragments nhanh, hãy chăm chỉ làm Sea Events (Săn Sea Beast), chạy Factory, hoặc tham gia Raid cùng bạn bè.",
-    "fruit": "Trái ác quỷ tốt nhất cho việc cày cấp (Grind) thường là Buddha (Phật Tổ) hoặc Magma, Light ở Sea đầu."
+    "sea_1": "Sea 1: Làm nhiệm vụ cốt truyện từ Starter Island lên Marine Fortress, Prison, Colosseum. Đạt Level 200 nhớ đi lấy kiếm Saber ở Jungle.",
+    "sea_2": "Sea 2 (Level 700+): Farm tại Kingdom of Rose, Green Zone, Hot and Cold. Làm nhiệm vụ Don Swan để sang Sea 3, tham gia Raid thức tỉnh trái ác quỷ.",
+    "sea_3": "Sea 3 (Level 1500+): Chinh phục các nhiệm vụ lấy vũ khí khủng (Soul Guitar, CDK, Tushita, Yama), nâng cấp Race V3/V4 và săn Boss cấp cao.",
+    "money": "Để kiếm Beli & Fragments nhanh: Chạy Sea Events (Săn Sea Beast), úp Factory, hoặc cày Raid liên tục."
 }
 
-# Danh sách mob thông thường theo Sea để phục vụ việc nhận diện auto quest
 BLOXY_QUEST_DATABASE = {
-    "sea_1": {"Bandit": 1, "Monkey": 10, "Gorilla": 20, "Pirate": 30, "Brute": 40, "Desert Bandit": 60, "Snow Bandit": 90},
-    "sea_2": {"Raider": 700, "Mercenary": 725, "Swan Pirate": 775, "Factory Staff": 800, "Marine Lieutenant": 875, "Zombie": 950},
-    "sea_3": {"Pirate Millionaire": 1500, "Pistol Billionaire": 1525, "Forest Pirate": 1575, "Mythological Pirate": 1600, "Reborn Skeleton": 1700}
+    "sea_1": {"Bandit": 1, "Monkey": 10, "Gorilla": 20, "Pirate": 30, "Brute": 40, "Desert Bandit": 60, "Snow Bandit": 90, "Chief Warden": 130},
+    "sea_2": {"Raider": 700, "Mercenary": 725, "Swan Pirate": 775, "Factory Staff": 800, "Marine Lieutenant": 875, "Zombie": 950, "Snow Trooper": 1000},
+    "sea_3": {"Pirate Millionaire": 1500, "Pistol Billionaire": 1525, "Forest Pirate": 1575, "Mythological Pirate": 1600, "Reborn Skeleton": 1700, "Candy Rebel": 2000}
 }
 
 ALLOWED_ACTIONS = {
@@ -110,7 +182,7 @@ def get_all_known_mobs():
 
 
 # ==========================================
-# 2. BỘ NÃO TỰ SUY NGHĨ & TRÒ CHUYỆN (BRAIN)
+# BỘ NÃO XỬ LÝ TOÀN BỘ NHIỆM VỤ & TRÒ CHUYỆN
 # ==========================================
 def brain_process(command, env):
     raw = command.strip()
@@ -120,107 +192,91 @@ def brain_process(command, env):
     level = player.get("level", 1)
     sea = env.get("world", {}).get("sea", "sea_1" if level < 700 else ("sea_2" if level < 1500 else "sea_3"))
 
-    # Lệnh dừng khẩn cấp
+    # Lệnh dừng
     if low in {"dừng", "stop", "hủy", "dừng ai"}:
         return "🤖 H-HUB AI: Đã dừng toàn bộ tác vụ theo yêu cầu của bạn.", [
             {"action": "stop", "args": {}, "reason": "Người dùng yêu cầu dừng"}
         ]
 
-    # Xử lý hội thoại: Xin gợi ý, tư vấn hướng đi
+    # Tư vấn / Gợi ý
     if any(q in low for q in ("gợi ý", "làm gì", "tiếp theo", "tư vấn", "hướng dẫn", "nên đi đâu", "cày ở đâu")):
-        guide_text = GAME_GUIDE_DATA.get(sea, "Hãy tiếp tục hoàn thành nhiệm vụ phù hợp với cấp độ.")
-        reply = (
-            f"🤖 H-HUB AI: Chào bạn! Dựa vào trạng thái hiện tại (Level {level}, {sea}), "
-            f"gợi ý cho bạn là: {guide_text} Bạn có muốn tôi tự động làm nhiệm vụ farm không?"
-        )
-        return reply, [
-            {"action": "inspect_status", "args": {}, "reason": "Kiểm tra chi tiết trạng thái"},
-            {"action": "chat_message", "args": {"message": "AI đã tư vấn hướng đi."}, "reason": "Phản hồi trò chuyện"}
+        guide_text = GAME_GUIDE_DATA.get(sea, "Hãy tiếp tục hoàn thành nhiệm vụ cốt truyện phù hợp với cấp độ.")
+        return f"🤖 H-HUB AI: Level {level} ({sea}). Gợi ý: {guide_text}", [
+            {"action": "inspect_status", "args": {}, "reason": "Kiểm tra trạng thái nhân vật"}
         ]
 
-    # Xử lý hội thoại: Chào hỏi, làm quen
+    # Chào hỏi
     if any(c in low for c in ("chào", "hi ", "hello", "ai ơi", "giúp mình", "bạn là ai")):
         return (
-            f"🤖 H-HUB AI: Chào bạn! Tôi là trợ lý AI quản lý hành trình Blox Fruit. "
-            f"Tôi có thể tư vấn chiến thuật, nhận diện mọi nhiệm vụ đặc biệt (Saber, Soul Guitar, Tushita,...) "
-            f"hoặc tự động điều khiển nhân vật. Bạn cần giúp gì?",
-            [{"action": "chat_message", "args": {"message": "Gửi lời chào người chơi."}, "reason": "Gửi lời chào"}]
+            "🤖 H-HUB AI: Chào bạn! Tôi quản lý **mọi loại nhiệm vụ trong Blox Fruit** (Cốt truyện, mở khóa phong cách chiến đấu, thức tỉnh Raid, lấy Saber, Soul Guitar, Tushita, Yama, CDK, Race V3/V4, v.v.). Bạn muốn thực hiện nhiệm vụ nào?",
+            [{"action": "chat_message", "args": {"message": "Sẵn sàng hỗ trợ toàn bộ nhiệm vụ Blox Fruit."}, "reason": "Chào hỏi"}]
         )
 
-    # Nhận diện các nhiệm vụ đặc biệt / lấy item / mở khóa
+    # Khớp tất cả nhiệm vụ đặc biệt có trong ADVANCED_QUESTS (Bao gồm vũ khí, võ thuật, race, boss)
     for quest_key, quest_info in ADVANCED_QUESTS.items():
         if quest_key in low or quest_key.replace(" ", "") in low.replace(" ", ""):
-            reply = f"🤖 H-HUB AI: Đã nhận diện nhiệm vụ chuyên biệt: {quest_info['description']}."
+            reply = f"🤖 H-HUB AI: Đã nhận diện nhiệm vụ [{quest_key.upper()}]: {quest_info['description']}."
             return reply, quest_info["steps"]
 
-    # Xử lý nhiệm vụ Raid / Săn Boss thế giới
+    # Xử lý Raid / Săn Boss
     if "raid" in low or "đánh boss" in low:
-        boss_name = "Boss"
+        boss_name = "Boss / Raid Target"
         if "dough" in low: boss_name = "Dough King"
         elif "indra" in low: boss_name = "Rip_Indra"
         elif "beast" in low: boss_name = "Sea Beast"
-        
-        return f"🤖 H-HUB AI: Đã lên kế hoạch săn Boss/Raid: {boss_name}.", [
-            {"action": "find_target", "args": {"category": "boss", "name": boss_name}, "reason": "Tìm vị trí Boss"},
-            {"action": "move_to", "args": {"target_name": boss_name}, "reason": "Di chuyển đến mục tiêu"},
-            {"action": "attack_target", "args": {"name": boss_name}, "reason": "Tiêu diệt Boss nhận phần thưởng"}
+        return f"🤖 H-HUB AI: Lên kế hoạch cho nhiệm vụ: {boss_name}.", [
+            {"action": "find_target", "args": {"category": "boss", "name": boss_name}, "reason": "Tìm mục tiêu"},
+            {"action": "move_to", "args": {"target_name": boss_name}, "reason": "Di chuyển đến mục tiêu"}
         ]
 
-    # Xử lý nhiệm vụ giải đố chung
+    # Xử lý giải đố / Puzzle chung
     if "giải đố" in low or "mở cổng" in low or "puzzle" in low:
-        return "🤖 H-HUB AI: Đang tiến hành phân tích môi trường để giải đố cơ chế nhiệm vụ.", [
-            {"action": "inspect_status", "args": {}, "reason": "Quét đối tượng tương tác xung quanh"},
-            {"action": "solve_puzzle", "args": {"context": low}, "reason": "Tự động tương tác giải đố"}
+        return "🤖 H-HUB AI: Đang quét không gian xung quanh để thực hiện giải đố cơ chế nhiệm vụ.", [
+            {"action": "inspect_status", "args": {}, "reason": "Quét đối tượng giải đố"},
+            {"action": "solve_puzzle", "args": {"context": low}, "reason": "Tự động tương tác"}
         ]
 
-    # Xử lý Tự động nhiệm vụ / Farm cấp độ
-    if any(x in low for x in ("tự động nhiệm vụ", "auto quest", "làm nhiệm vụ", "auto làm nhiệm vụ")):
+    # Auto Quest / Farm Level tự động theo Sea và Level
+    if any(x in low for x in ("tự động nhiệm vụ", "auto quest", "làm nhiệm vụ", "auto farm")):
         sea_map = BLOXY_QUEST_DATABASE.get(sea, BLOXY_QUEST_DATABASE["sea_1"])
         target_mob = list(sea_map.keys())[0]
         for mob, req_lvl in sea_map.items():
             if level >= req_lvl:
                 target_mob = mob
 
-        reply = f"🤖 H-HUB AI: Đã nhận diện Level {level} ({sea}). Tự động kích hoạt nhiệm vụ tiêu diệt: {target_mob}."
+        reply = f"🤖 H-HUB AI: Đang thực hiện chuỗi nhiệm vụ cày cấp cho Level {level} ({sea}) với mục tiêu: {target_mob}."
         plan = [
-            {"action": "inspect_status", "args": {}, "reason": "Kiểm tra trạng thái nhân vật"},
-            {"action": "accept_quest", "args": {"target": target_mob}, "reason": "Nhận quest phù hợp cấp độ"},
-            {"action": "find_target", "args": {"category": "mob", "name": target_mob, "count": 1}, "reason": f"Tìm {target_mob}"},
-            {"action": "move_to", "args": {"target_name": target_mob}, "reason": "Di chuyển tới vị trí quái"},
-            {"action": "attack_target", "args": {"name": target_mob}, "reason": "Tiêu diệt mục tiêu nhiệm vụ"}
+            {"action": "inspect_status", "args": {}, "reason": "Kiểm tra quest log"},
+            {"action": "accept_quest", "args": {"target": target_mob}, "reason": "Nhận nhiệm vụ phù hợp"},
+            {"action": "find_target", "args": {"category": "mob", "name": target_mob}, "reason": "Tìm mục tiêu"},
+            {"action": "move_to", "args": {"target_name": target_mob}, "reason": "Đến vị trí quái"},
+            {"action": "attack_target", "args": {"name": target_mob}, "reason": "Tiêu diệt hoàn thành quest"}
         ]
         return reply, plan
 
-    # Xử lý lệnh đánh quái chỉ định thủ công
+    # Đánh quái thủ công
     if any(word in low for word in ("đánh", "giết", "farm")):
         all_mobs = get_all_known_mobs()
-        requested = re.sub(r"\b(đánh|giết|farm|quái|con|gần nhất|rồi nhặt trái)\b", " ", low)
+        requested = re.sub(r"\b(đánh|giết|farm|quái|con|gần nhất)\b", " ", low)
         requested = re.sub(r"\d+", " ", requested).strip(" ,")
         target = "nearest" if "gần nhất" in low or not requested else match_name(requested, all_mobs)
+        if not target: target = "Bandit"
         
-        count_match = re.search(r"(?:đánh|giết)\s+(\d+)", low)
-        count = min(int(count_match.group(1)), 100) if count_match else 1
-
-        if not target:
-            target = "Bandit"
-
-        plan = [
-            {"action": "find_target", "args": {"category": "mob", "name": target, "count": count}, "reason": "Tìm quái vật"},
-            {"action": "move_to", "args": {"target_name": target}, "reason": "Tiếp cận mục tiêu"},
-            {"action": "attack_target", "args": {"name": target, "count": count}, "reason": "Tiêu diệt quái"}
+        return f"🤖 H-HUB AI: Lên kế hoạch tiêu diệt mục tiêu {target}.", [
+            {"action": "find_target", "args": {"category": "mob", "name": target}, "reason": "Tìm quái"},
+            {"action": "move_to", "args": {"target_name": target}, "reason": "Tiếp cận"},
+            {"action": "attack_target", "args": {"name": target}, "reason": "Tiêu diệt"}
         ]
-        return f"🤖 H-HUB AI: Đã lên kế hoạch đánh {target} (Số lượng: {count}).", plan
 
-    # Phản hồi mặc định thông minh (Chủ động trò chuyện + Đưa ra phương án)
+    # Mặc định thông minh
     return (
-        f"🤖 H-HUB AI: Tôi đã hiểu yêu cầu '{command}'. "
-        f"Nhân vật đang ở Level {level}. Bạn có thể gõ 'gợi ý cho tôi', 'auto nhiệm vụ', 'lấy saber', hoặc 'đánh quái' bất cứ lúc nào!",
-        [{"action": "chat_message", "args": {"message": f"Phản hồi lệnh: {command}"}, "reason": "Ghi nhận lệnh tương tác"}]
+        f"🤖 H-HUB AI: Đã ghi nhận lệnh '{command}'. Bạn có thể yêu cầu bất kỳ nhiệm vụ nào trong Blox Fruit (Ví dụ: 'lấy saber', 'lấy soul guitar', 'lấy cdk', 'race v3', 'race v4', 'raid', 'dark step', v.v.).",
+        [{"action": "chat_message", "args": {"message": f"Phản hồi lệnh: {command}"}, "reason": "Ghi nhận lệnh"}]
     )
 
 
 # ==========================================
-# 3. HTTP SERVER CHO RENDER DEPLOYMENT
+# RENDER HTTP SERVER
 # ==========================================
 def send_json(handler, status, payload):
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
@@ -232,55 +288,36 @@ def send_json(handler, status, payload):
     handler.wfile.write(body)
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "HHubAI-MasterUltimate/3.0"
-
-    def log_message(self, fmt, *args):
-        print("[HTTP]", fmt % args)
+    server_version = "HHubAI-AllQuestsMaster/4.0"
 
     def do_GET(self):
         path = urlparse(self.path).path
         if path in {"/health", "/"}:
-            return send_json(self, 200, {
-                "ok": True, 
-                "service": "H-HUB AI Cloud - Blox Fruit Master Ultimate Edition", 
-                "version": "3.0"
-            })
+            return send_json(self, 200, {"ok": True, "service": "H-HUB AI Cloud - Blox Fruit All Quests Master Edition"})
         return send_json(self, 404, {"error": "Not found"})
 
     def do_POST(self):
         path = urlparse(self.path).path
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            if length <= 0 or length > MAX_BODY:
-                raise ValueError("Body trống hoặc vượt giới hạn")
             data = json.loads(self.rfile.read(length).decode("utf-8"))
         except Exception as exc:
             return send_json(self, 400, {"error": str(exc)})
 
         if path == "/v1/observe":
-            session = str(data.get("session_id", ""))[:100]
-            if not session:
-                return send_json(self, 400, {"error": "Thiếu session_id"})
-            data["_received_at"] = time.time()
+            session = str(data.get("session_id", ""))
             OBSERVATIONS[session] = data
-            return send_json(self, 200, {"ok": True, "session_id": session})
+            return send_json(self, 200, {"ok": True})
 
         if path == "/v1/think":
             session = str(data.get("session_id", ""))
-            command = str(data.get("command", "")).strip()
+            command = str(data.get("command", ""))
             env = OBSERVATIONS.get(session, {})
             reply, plan = brain_process(command, env)
-            
-            # Lưu lịch sử chat/lệnh ngắn hạn
-            HISTORY.setdefault(session, []).append({
-                "command": command, "reply": reply, "plan": plan, "at": time.time()
-            })
-            HISTORY[session] = HISTORY[session][-30:]
-            
             return send_json(self, 200, {"reply": reply, "plan": plan})
 
         return send_json(self, 404, {"error": "Unknown endpoint"})
 
 if __name__ == "__main__":
-    print(f"H-HUB AI Cloud Master Ultimate Edition listening on {HOST}:{PORT}")
+    print(f"H-HUB AI Cloud All-Quests Edition listening on {HOST}:{PORT}")
     ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()
